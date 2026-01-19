@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .control-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 5px;
+    }
+    #logs {
+      height: 200px;
+      overflow-y: auto;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      padding: 5px;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+    .log-entry {
+      margin-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 2px;
+    }
+    .log-time {
+      color: #666;
+      font-size: 10px;
+    }
+    .status-running {
+      color: green;
+      font-weight: bold;
+    }
+    .status-stopped {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h3>Polymarket Auto Claim</h3>
+  
+  <div class="control-group">
+    <label for="interval">Check Interval:</label>
+    <select id="interval">
+      <option value="0.16666666666">10 Seconds</option>
+      <option value="1">1 Minute</option>
+      <option value="3">3 Minutes</option>
+      <option value="5">5 Minutes</option>
+      <option value="10">10 Minutes</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <div>Status: <span id="status">Active</span></div>
+  </div>
+
+  <div class="control-group">
+    <label>Logs:</label>
+    <div id="logs"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

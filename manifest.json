@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Polymarket Auto Claim",
+  "version": "1.0",
+  "description": "Automatically fetch relay payload on Polymarket",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.polymarket.com/*",
+    "https://relayer-v2.polymarket.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.polymarket.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
