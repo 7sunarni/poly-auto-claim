@@ -3,6 +3,7 @@ console.info('%c Polymarket Auto Claim extension loaded.', 'background: #222; co
 
 let intervalId = null;
 let currentIntervalMinutes = 1;
+const CASH_MISSING_WEBHOOK_URL = ''; 
 
 // Initialize
 chrome.storage.local.get(['fetchInterval'], (result) => {
@@ -100,6 +101,18 @@ async function attemptClaim() {
     return buttons.find(b => b.innerText.trim() === text);
   };
 
+  const findButtonByPrefix = (text) => {
+    const buttons = Array.from(document.querySelectorAll('button'));
+    return buttons.find(b => b.innerText.trim().startsWith(text));
+  };
+
+  const cashButton = findButtonByText('Cash') || findButtonByPrefix('Cash');
+  if (!cashButton) {
+    console.log('"Cash" button not found. Sending webhook alert...');
+    addLog('"Cash" button not found. Sending webhook alert...');
+    sendCashMissingWebhook();
+  }
+
   const claimButton = findButtonByText('Claim');
   
   if (claimButton) {
@@ -116,7 +129,7 @@ async function attemptClaim() {
         return;
       }
 
-      const claimProceedsButton = findButtonByText('Claim proceeds');
+      const claimProceedsButton = findButtonByPrefix('Claim $');
       if (claimProceedsButton) {
         console.log('Found "Claim proceeds" button. Clicking...');
         addLog('Found "Claim proceeds" button. Clicking...');
@@ -185,6 +198,32 @@ function checkAndCloseErrorPopup() {
     }
   }
   return false;
+}
+
+function sendCashMissingWebhook() {
+  const webhookUrl = CASH_MISSING_WEBHOOK_URL.trim();
+  if (!webhookUrl) {
+    console.log('Cash webhook URL not set. Skipping alert.');
+    return;
+  }
+
+  const payload = {
+    type: 'cash_button_missing',
+    url: window.location.href,
+    timestamp: new Date().toISOString()
+  };
+
+  fetch(webhookUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'text/plain;charset=UTF-8'
+    },
+    body: JSON.stringify(payload),
+    keepalive: true
+  }).catch((error) => {
+    console.warn('Failed to send cash missing webhook alert.', error);
+  });
 }
 
 function addLog(message) {
